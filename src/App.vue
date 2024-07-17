@@ -1,6 +1,7 @@
 <template>
-  <div class="main">
+  <div class="flex flex-col h-screen w-screen">
     <base-navigator />
+    <router-view></router-view>
   </div>
 </template>
 
