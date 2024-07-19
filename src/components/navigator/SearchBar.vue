@@ -1,9 +1,7 @@
-<template>
-
-</template>
+<template></template>
 
 <script setup>
-import ToolBar from './ToolBar.vue';
+import ToolBar from "./ToolBar.vue";
 </script>
 
-<style scoped lang='scss'></style>
+<style scoped lang="scss"></style>

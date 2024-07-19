@@ -1,5 +1,5 @@
 <template>
-  <div class=" w-full h-full flex flex-col items-center justify-center">
+  <div class="w-full h-full flex flex-col items-center justify-center">
     <el-icon class="sm:text-5xl md:text-8xl lg:text-9xl">
       <Sunny v-if="!isDark" />
       <Moon v-else />
@@ -9,8 +9,8 @@
 </template>
 
 <script setup>
-import { useDark } from "@vueuse/core"
-const isDark = useDark()
+import { useDark } from "@vueuse/core";
+const isDark = useDark();
 </script>
 
-<style scoped lang='scss'></style>
+<style scoped lang="scss"></style>

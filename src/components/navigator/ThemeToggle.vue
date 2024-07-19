@@ -1,20 +1,24 @@
 <template>
-  <el-switch v-model="is" @click="toggleTheme($event)"
-    style="--el-switch-on-color: #2c2c2c; --el-switch-off-color: #ccc;" :active-action-icon="Moon"
-    :inactive-action-icon="Sunny">
+  <el-switch
+    v-model="is"
+    @click="toggleTheme($event)"
+    style="--el-switch-on-color: #2c2c2c; --el-switch-off-color: #ccc"
+    :active-action-icon="Moon"
+    :inactive-action-icon="Sunny"
+  >
   </el-switch>
 </template>
 
 <script setup>
-import { Moon, Sunny } from '@element-plus/icons-vue';
-import { useDark, useToggle } from '@vueuse/core';
-import { onMounted, ref } from 'vue';
-const is = ref(null)
-const isDark = useDark()
+import { Moon, Sunny } from "@element-plus/icons-vue";
+import { useDark, useToggle } from "@vueuse/core";
+import { onMounted, ref } from "vue";
+const is = ref(null);
+const isDark = useDark();
 onMounted(() => {
-  is.value = useDark().value
-})
-const toggleDark = useToggle(isDark)
+  is.value = useDark().value;
+});
+const toggleDark = useToggle(isDark);
 const toggleTheme = (event) => {
   const x = event.clientX;
   const y = event.clientY;
@@ -24,12 +28,12 @@ const toggleTheme = (event) => {
   );
   // 兼容性处理
   if (!document.startViewTransition) {
-    toggleDark()
-    return
+    toggleDark();
+    return;
   }
   const transition = document.startViewTransition(() => {
-    toggleDark()
-  })
+    toggleDark();
+  });
 
   transition.ready.then(() => {
     const clipPath = [
@@ -42,17 +46,17 @@ const toggleTheme = (event) => {
       },
       {
         duration: 600,
-        easing: 'ease-in',
+        easing: "ease-in",
         pseudoElement: isDark.value
-          ? '::view-transition-old(root)'
-          : '::view-transition-new(root)',
+          ? "::view-transition-old(root)"
+          : "::view-transition-new(root)",
       }
     );
   });
-}
+};
 </script>
 
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .dark::view-transition-old(root) {
   z-index: 1;
 }
@@ -60,7 +64,6 @@ const toggleTheme = (event) => {
 .dark::view-transition-new(root) {
   z-index: 1999;
 }
-
 
 ::view-transition-old(root) {
   z-index: 1999;

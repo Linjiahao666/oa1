@@ -8,6 +8,6 @@
 </template>
 
 <script lang="ts" setup>
-import { useDark } from '@vueuse/core'
-const isDark = useDark()
+import { useDark } from "@vueuse/core";
+const isDark = useDark();
 </script>

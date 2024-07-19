@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import BaseNavigator from '@/components/navigator/BaseNavigator.vue';
+import BaseNavigator from "@/components/navigator/BaseNavigator.vue";
 </script>
 
-<style scoped lang='scss'></style>
+<style scoped lang="scss"></style>
