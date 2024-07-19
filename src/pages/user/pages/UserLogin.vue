@@ -5,6 +5,7 @@
       :model="formData"
       label-width="auto"
       status-icon
+      :rules="rules"
       ref="formRef"
     >
       <base-toggle></base-toggle>
@@ -22,7 +23,7 @@
         :label="LOGIN_FORM_LABEL.ASSUREPASSWORD"
         prop="assurePassword"
       >
-        <el-input type="password" v-model="formData.password"></el-input>
+        <el-input type="password" v-model="formData.assurePassword"></el-input>
       </el-form-item>
       <el-form-item
         class="relative"
@@ -53,6 +54,7 @@ import BaseLogo from "../components/BaseLogo.vue";
 import BaseToggle from "../components/BaseToggle.vue";
 import { reactive, ref } from "vue";
 import { loginFormData, LOGIN_FORM_LABEL } from "../const/loginFormData";
+import type { FormInstance, FormRules } from "element-plus";
 const formData = reactive<loginFormData>({
   account: "",
   password: "",
@@ -60,8 +62,35 @@ const formData = reactive<loginFormData>({
   validateKey: "",
 });
 
-const formRef = ref();
-function handleLogin() {}
+const formRef = ref<FormInstance>();
+
+const rules = reactive<FormRules<typeof formData>>({
+  account: [{ required: true, message: "请输入账号", trigger: "blur" }],
+  password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+  assurePassword: [
+    { required: true, message: "请再次输入密码", trigger: "blur" },
+    {
+      validator: (rule: any, value: any, callback: any) => {
+        if (value !== formData.password) {
+          callback(new Error("两次输入密码不一致"));
+        } else {
+          callback();
+        }
+      },
+    },
+  ],
+  validateKey: [{ required: true, message: "请输入验证码 ", trigger: "blur" }],
+});
+
+function submitForm(form: FormInstance) {
+  form.validate((valid: any) => {
+    if (valid) {
+      console.log("submit!");
+    } else {
+      console.log("error submit!");
+    }
+  });
+}
 </script>
 
 <style scoped lang="scss"></style>
