@@ -1,6 +1,7 @@
 <template>
   <div class="flex flex-row items-center justify-center flex-auto">
-    <el-form class="rounded-xl border-2 border-el px-8 py-8 w-2/5 relative" :model="formData" label-width="auto">
+    <el-form class="rounded-xl border-2 border-el px-8 py-8 w-2/5 relative will-change-transform" :model="formData" label-width="auto">
+      <base-toggle></base-toggle>
       <!-- <h1 class="text-3xl w-full text-center pb-4">
         Login
       </h1> -->
@@ -25,6 +26,7 @@
 
 <script setup lang="ts">
 import BaseLogo from '../components/BaseLogo.vue'
+import BaseToggle from '../components/BaseToggle.vue';
 import { reactive } from 'vue';
 import { loginFormData, LOGIN_FORM_LABEL } from '../const/loginFormData';
 const formData = reactive<loginFormData>({
