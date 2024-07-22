@@ -1,13 +1,26 @@
 @mixin scrollBar {
+  $scrollbar-thumb: var(--el-text-color-regular);
+  $scrollbar-track: var(--el-border-color-dark);
   &::-webkit-scrollbar {
-    width: 32px;
+    width: 0px;
+  }
+
+  &:hover {
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
   }
   &::-webkit-scrollbar-thumb {
     background-color: $scrollbar-thumb;
-    border-radius: 10px;
+    border-radius: 999px;
   }
+
   &::-webkit-scrollbar-track {
     background-color: $scrollbar-track;
-    border-radius: 10px;
+    border-radius: 999px;
   }
+}
+
+.scroll-bar {
+  @include scrollBar();
 }
