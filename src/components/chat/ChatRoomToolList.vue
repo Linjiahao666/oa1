@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-row">
+  <div class="flex flex-row border-l-2 border-el">
     <span>tool-list</span>
   </div>
 </template>

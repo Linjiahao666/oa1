@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-shrink-0 flex-grow-0 flex flex-row w-full h-12 items-center">
+  <div class="flex-shrink-0 flex-grow-0 flex flex-row w-full h-12 items-center border-b-2 border-el">
     <el-skeleton class="h-full" :loading="loading" animated>
       <template #template>
         <div class="h-full w-full flex flex-row items-center">

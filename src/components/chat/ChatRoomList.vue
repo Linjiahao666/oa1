@@ -1,8 +1,8 @@
 <template>
-  <div class="flex flex-col bg-slate-400 bg-opacity-30 w-full h-full " @click="handleClick">
+  <div class="flex flex-col w-full h-full border-r-2 border-el" @click="handleClick">
     <ChatRoomListSearchBar class="px-4 mt-4" @search="handleSearch" />
     <div class="mt-4 overflow-y-auto overflow-x-hidden px-4 list scroll-bar">
-      <ChatRoomListItem class='hover:bg-slate-200 duration-300' v-for="(chatItem, index) in 100" :key="index"
+      <ChatRoomListItem class='hover:opacity-80 duration-300' v-for="(chatItem, index) in 100" :key="index"
         :item="chatItem" />
     </div>
   </div>
