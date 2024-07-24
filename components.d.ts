@@ -14,6 +14,7 @@ declare module 'vue' {
     ChatRoomContent: typeof import('./src/components/chat/ChatRoomContent.vue')['default']
     ChatRoomContentBody: typeof import('./src/components/chat/ChatRoomContentBody.vue')['default']
     ChatRoomContentBodyBar: typeof import('./src/components/chat/ChatRoomContentBodyBar.vue')['default']
+    ChatRoomContentBodyMessage: typeof import('./src/components/chat/ChatRoomContentBodyMessage.vue')['default']
     ChatRoomContentFooter: typeof import('./src/components/chat/ChatRoomContentFooter.vue')['default']
     ChatRoomContentHead: typeof import('./src/components/chat/ChatRoomContentHead.vue')['default']
     ChatRoomFooterInput: typeof import('./src/components/chat/ChatRoomFooterInput.vue')['default']
