@@ -1,6 +1,8 @@
 <template>
-  <div class="overflow-y-auto body scroll-bar border-b-2 border-el">
-    <div v-for="i in 100">{{ i }}</div>
+  <div class="border-el flex-auto h-full relative">
+    <div class="scroll-bar h-full w-full absolute overflow-y-auto select-none">
+      <div v-for="i in 100">{{ i }}</div>
+    </div>
   </div>
 </template>
 
@@ -8,9 +10,4 @@
 
 </script>
 
-<style scoped lang='scss'>
-.body {
-  max-height: calc(100vh - 16rem);
-  user-select: none;
-}
-</style>
+<style scoped lang='scss'></style>

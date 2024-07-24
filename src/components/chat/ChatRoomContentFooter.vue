@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col flex-grow-0 flex-shrink-0 w-full h-40 relative">
+  <div class="flex flex-col flex-grow-0 flex-shrink-0 w-full h-40">
     <ChatRoomFooterToolBar />
     <ChatRoomFooterInput />
     <div class="flex w-full h-8 items-start justify-end ">

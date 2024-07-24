@@ -1,8 +1,8 @@
 <template>
-  <div class="flex flex-col w-full h-full relative">
+  <div class="flex flex-col w-full h-full">
     <ChatRoomContentHead />
     <ChatRoomContentBody ref="body" />
-    <div class="resize-handle" @mousedown="startResize" ref="resize"></div>
+    <div class="resize-handle" @mousedown="startResize"></div>
     <ChatRoomContentFooter ref="footer" />
   </div>
 </template>
@@ -12,16 +12,18 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import ChatRoomContentBody from './ChatRoomContentBody.vue';
 import ChatRoomContentFooter from './ChatRoomContentFooter.vue';
 import ChatRoomContentHead from './ChatRoomContentHead.vue';
-
-const body = ref();
 const footer = ref();
-const resize = ref();
-
+const body = ref()
 function startResize(event) {
   const startY = event.clientY;
-  console.log(object);
-  function doResize(moveEvent) {
-
+  const initHeight = footer.value.$el.offsetHeight;
+  const bodyHeight = body.value.$el.offsetHeight;
+  function doResize(e) {
+    const diff = e.clientY - startY;
+    const newHeight = initHeight - diff;
+    const newBodyHeight = bodyHeight + diff;
+    if (newHeight < 150 || newBodyHeight < 100) return;
+    footer.value.$el.style.height = `${newHeight}px`;
   }
 
   function stopResize() {
@@ -33,21 +35,41 @@ function startResize(event) {
   window.addEventListener('mouseup', stopResize);
 }
 
+
 </script>
 
 <style scoped lang='scss'>
 .resize-handle {
-  position: absolute;
-  cursor: ns-resize;
-  height: 2px;
+  cursor: row-resize;
+  height: 1px;
   width: 100%;
-  position: absolute;
   transition-duration: .3s;
   background-color: var(--el-border-color);
-  bottom: 10rem;
+  position: relative;
 
-  &:hover {
-    height: 5px;
+  &::after,
+  &::before {
+    content: '';
+    height: 3px;
+    width: 100%;
+    opacity: 0;
+    background-color: var(--el-border-color);
+    display: block;
+    transition-duration: .3s;
+    position: absolute;
+  }
+
+  &::before {
+    top: -100%;
+  }
+
+  &::after {
+    bottom: 100%;
+  }
+
+  &:hover::after,
+  &:hover::before {
+    opacity: 1;
   }
 }
 </style>
