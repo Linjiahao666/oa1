@@ -17,6 +17,15 @@ const router = createRouter({
   routes,
 })
 
+// 添加全局前置守卫
+router.beforeEach((to, from, next) => {
+  const routeExists = routes.some(route => route.path === to.path)
+  if (!routeExists) {
+    next({ path: '/404', replace: true })
+  } else {
+    next()
+  }
+})
 
 export {
   router
