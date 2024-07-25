@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-row justify-start items-center text-xl h-8">
+  <div class="ml-2 flex flex-row justify-start items-center text-xl h-8">
     <el-icon>
       <Folder />
     </el-icon>
