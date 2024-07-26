@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     A: typeof import('./src/components/a.vue')['default']
     BaseChatList: typeof import('./src/components/chat/BaseChatList.vue')['default']
+    BaseModal: typeof import('./src/components/modal/BaseModal.vue')['default']
     BaseNavigator: typeof import('./src/components/navigator/BaseNavigator.vue')['default']
     BasePageLayout: typeof import('./src/components/layout/BasePageLayout.vue')['default']
     ChatRoomContent: typeof import('./src/components/chat/ChatRoomContent.vue')['default']
@@ -29,6 +30,7 @@ declare module 'vue' {
     SearchBar: typeof import('./src/components/navigator/SearchBar.vue')['default']
     ThemeToggle: typeof import('./src/components/navigator/ThemeToggle.vue')['default']
     ToolBar: typeof import('./src/components/navigator/ToolBar.vue')['default']
+    UserInfoModal: typeof import('./src/components/modal/UserInfoModal.vue')['default']
     VerticalLayout: typeof import('./src/components/layout/VerticalLayout.vue')['default']
   }
 }
