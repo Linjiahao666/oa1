@@ -1,0 +1,36 @@
+.resize-handle {
+  cursor: row-resize;
+  height: 1px;
+  width: 100%;
+  transition-duration: .3s;
+  background-color: var(--el-border-color);
+  position: relative;
+  &::after,
+  &::before {
+    content: '';
+    height: 3px;
+    width: 100%;
+    opacity: 0;
+    background-color: var(--el-border-color);
+    display: block;
+    transition-duration: .3s;
+    position: absolute;
+  }
+
+  &::before {
+    top: -100%;
+  }
+
+  &::after {
+    bottom: 100%;
+  }
+
+  &:hover::after,
+  &:hover::before {
+    opacity: 1;
+  }
+}
+
+.vertical {
+  cursor: col-resize;
+}
