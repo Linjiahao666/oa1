@@ -27,7 +27,7 @@ import UserInfoModal from "./modal/UserInfoModal.vue";
 import { useBus } from '@/hooks/useBus.ts';
 import { ref } from "vue";
 const { bus } = useBus()
-const toggleUserInfo = ref<boolean>(true)
+const toggleUserInfo = ref<boolean>(false)
 function closeModal() {
   toggleUserInfo.value = false
 }
