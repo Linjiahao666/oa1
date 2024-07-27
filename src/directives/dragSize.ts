@@ -4,7 +4,6 @@ export default {
   mounted(el, binding) {
     const parent = el.parentNode;
     const prev = el.previousElementSibling;
-    console.log(binding);
     const [minI = 0, maxP = 0] = binding.value || []
     if (!prev) {
       console.error('No previous sibling element found.');
