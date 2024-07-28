@@ -9,15 +9,24 @@ export default defineConfig({
   plugins: [
     vue(),
     AutoImport({
-      resolvers:[ElementPlusResolver()]
+      resolvers: [ElementPlusResolver()]
     }),
     Components({
-      resolvers:[ElementPlusResolver()]
+      resolvers: [ElementPlusResolver()]
     })
   ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, './src'),
     }
-  }
+  },
+  // server: {
+  //   proxy: {
+  //     '/user': {
+  //       target: 'http://localhost:3000/',
+  //       changeOrigin: true,
+  //       rewrite: (path) => path.replace(/^\/user/, '')
+  //     }
+  //   }
+  // }
 })

@@ -1,5 +1,6 @@
 import UserLogin from "./pages/UserLogin.vue";
 import UserSign from "./pages/UserSign.vue";
+import Auth from './pages/Auth.vue';
 
 export const routes = [
   {
@@ -9,5 +10,9 @@ export const routes = [
   {
     path: '/user/sign',
     component: UserSign
+  },
+  {
+    path: '/user/auth',
+    component: Auth
   }
 ]
