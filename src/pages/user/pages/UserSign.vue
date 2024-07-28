@@ -1,53 +1,93 @@
 <template>
-  <base-page-layout>
+  <div class="flex flex-row items-center justify-center flex-auto">
     <el-form
       class="rounded-xl border-2 border-el px-8 py-8 w-2/5 relative will-change-transform"
       :model="formData"
-      ref="formRef"
+      label-width="auto"
+      status-icon
       :rules="rules"
+      ref="formRef"
     >
-      <base-logo></base-logo>
       <base-toggle></base-toggle>
-      <el-form-item :label="SIGN_FORM_LABEL.ACCOUNT" prop="account">
+      <!-- <h1 class="text-3xl w-full text-center pb-4">
+        Login
+      </h1> -->
+      <base-logo></base-logo>
+      <el-form-item :label="LOGIN_FORM_LABEL.ACCOUNT" prop="account">
         <el-input v-model="formData.account"></el-input>
       </el-form-item>
-      <el-form-item :label="SIGN_FORM_LABEL.PASSWORD" prop="password">
-        <el-input v-model="formData.password" type="password"></el-input>
+      <el-form-item :label="LOGIN_FORM_LABEL.PASSWORD" prop="password">
+        <el-input type="password" v-model="formData.password"></el-input>
+      </el-form-item>
+      <el-form-item
+        :label="LOGIN_FORM_LABEL.ASSUREPASSWORD"
+        prop="assurePassword"
+      >
+        <el-input type="password" v-model="formData.assurePassword"></el-input>
+      </el-form-item>
+      <el-form-item
+        class="relative"
+        :label="LOGIN_FORM_LABEL.VALIDATEKEY"
+        prop="validateKey"
+      >
+        <el-input class="w-2/4" v-model="formData.validateKey"></el-input>
+        <div
+          class="w-1/4 absolute right-0 border-2 border-white bg-slate-500 rounded-xl text-center"
+        >
+          yzm
+        </div>
       </el-form-item>
       <el-form-item class="relative mt-12">
         <el-button
           class="w-2/5 absolute left-1/2 -translate-x-1/2"
           type="primary"
           @click="submitForm(formRef)"
-          >sign</el-button
+          >login</el-button
         >
       </el-form-item>
     </el-form>
-  </base-page-layout>
+  </div>
 </template>
 
 <script setup lang="ts">
-import BasePageLayout from "../../../components/layout/BasePageLayout.vue";
 import BaseLogo from "../components/BaseLogo.vue";
 import BaseToggle from "../components/BaseToggle.vue";
 import { reactive, ref } from "vue";
-import { SIGN_FORM_LABEL, signFormData } from "../const/loginFormData";
+import { loginFormData, LOGIN_FORM_LABEL } from "../const/loginFormData";
 import type { FormInstance, FormRules } from "element-plus";
-const formData = reactive<signFormData>({
+const formData = reactive<loginFormData>({
   account: "",
   password: "",
+  assurePassword: "",
+  validateKey: "",
 });
-const rules = reactive<FormInstance<typeof formData>>({
+
+const formRef = ref<FormInstance>();
+
+const rules = reactive<FormRules<typeof formData>>({
   account: [{ required: true, message: "请输入账号", trigger: "blur" }],
   password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+  assurePassword: [
+    { required: true, message: "请再次输入密码", trigger: "blur" },
+    {
+      validator: (rule: any, value: any, callback: any) => {
+        if (value !== formData.password) {
+          callback(new Error("两次输入密码不一致"));
+        } else {
+          callback();
+        }
+      },
+    },
+  ],
+  validateKey: [{ required: true, message: "请输入验证码 ", trigger: "blur" }],
 });
-const formRef = ref();
+
 function submitForm(form: FormInstance) {
   form.validate((valid: any) => {
     if (valid) {
-      console.log("success");
+      console.log("submit!");
     } else {
-      console.log("error");
+      console.log("error submit!");
     }
   });
 }
