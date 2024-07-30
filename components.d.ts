@@ -30,6 +30,7 @@ declare module 'vue' {
     SearchBar: typeof import('./src/components/navigator/SearchBar.vue')['default']
     ThemeToggle: typeof import('./src/components/navigator/ThemeToggle.vue')['default']
     ToolBar: typeof import('./src/components/navigator/ToolBar.vue')['default']
+    TreeSelector: typeof import('./src/components/selector/TreeSelector.vue')['default']
     UserInfoModal: typeof import('./src/components/modal/UserInfoModal.vue')['default']
     VerticalLayout: typeof import('./src/components/layout/VerticalLayout.vue')['default']
   }

@@ -39,3 +39,10 @@ node v18.17.0
 ## 7.27
 
 developing...
+
+## 7.30
+
+todos:
+- chatroom后端
+- job
+- contact
