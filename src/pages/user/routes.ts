@@ -1,18 +1,14 @@
-import UserLogin from "./pages/UserLogin.vue";
-import UserSign from "./pages/UserSign.vue";
-import Auth from './pages/Auth.vue';
-
 export const routes = [
   {
     path: '/user/login',
-    component: UserLogin
+    component: () => import('./pages/UserLogin.vue')
   },
   {
     path: '/user/sign',
-    component: UserSign
+    component: () => import('./pages/UserSign.vue')
   },
   {
     path: '/user/auth',
-    component: Auth
+    component: () => import('./pages/Auth.vue')
   }
 ]
