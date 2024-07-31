@@ -1,25 +1,20 @@
 <template>
-  <el-switch
-    v-model="is"
-    @click="toggleTheme($event)"
-    style="--el-switch-on-color: #2c2c2c; --el-switch-off-color: #ccc"
-    :active-action-icon="Moon"
-    :inactive-action-icon="Sunny"
-  >
+  <el-switch v-model="is" @click="toggleTheme($event)" style="--el-switch-on-color: #2c2c2c; --el-switch-off-color: #ccc"
+    :active-action-icon="Moon" :inactive-action-icon="Sunny">
   </el-switch>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { Moon, Sunny } from "@element-plus/icons-vue";
 import { useDark, useToggle } from "@vueuse/core";
 import { onMounted, ref } from "vue";
-const is = ref(null);
+const is = ref<null | boolean>();
 const isDark = useDark();
 onMounted(() => {
   is.value = useDark().value;
 });
 const toggleDark = useToggle(isDark);
-const toggleTheme = (event) => {
+const toggleTheme = (event: any) => {
   const x = event.clientX;
   const y = event.clientY;
   const endRadius = Math.hypot(
@@ -80,7 +75,7 @@ const toggleTheme = (event) => {
 }
 
 /* 改变light下switch圆球的图标颜色 */
-:deep.el-switch__action {
+:deep(.el-switch__action) {
   color: black !important;
 }
 </style>

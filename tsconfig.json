@@ -6,6 +6,9 @@
         "src/*"
       ]
     },
+    "types": [
+      "element-plus/global"
+    ],
     "target": "ES2020",
     "useDefineForClassFields": true,
     "module": "ESNext",
@@ -31,7 +34,8 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
-    "src/**/*.vue"
+    "src/**/*.vue",
+    "auto-imports.d.ts"
   ],
   "references": [
     {

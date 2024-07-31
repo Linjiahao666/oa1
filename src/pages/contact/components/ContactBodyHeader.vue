@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
+// import { defineProps } from 'vue';
 const { title, setFn, setName } = defineProps({
   title: {
     type: String,
