@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-row h-12 bg-red-400 text-base select-none" ref="container">
-    <div class="ml-2 item px-2 flex flex-row items-center cursor-pointer pt-1 h-full" v-for="(item, index) in list"
+  <div class="flex flex-row h-12 text-base select-none ml-2" ref="container" :style="{ backgroundColor: totalColor }">
+    <div class="item px-2 flex flex-row items-center cursor-pointer pt-1 h-full" v-for="( item, index ) in  list "
       :key="index" @click="changeTab(index)" :class="{ active: currentTab === index }">
       {{ item.name }}
     </div>
@@ -18,6 +18,14 @@ const { list } = defineProps(
     list: {
       type: Array as PropType<Item[]>,
       default: []
+    },
+    totalColor: {
+      type: String,
+      default: 'transparent'
+    },
+    activeColor: {
+      type: String,
+      default: 'transparent'
     }
   }
 )
@@ -61,7 +69,7 @@ $radius: 0.6rem;
     position: absolute;
     width: 100%;
     height: 98%;
-    background: var(--el-color-success-light-3);
+    background: v-bind(activeColor);
     left: 0;
     bottom: 0;
     z-index: -1;

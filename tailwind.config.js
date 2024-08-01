@@ -6,6 +6,9 @@ export default {
       borderColor: {
         el: "var(--el-border-color)",
       },
+      backgroundColor: {
+        editor: "var(--el-border-color-dark)",
+      },
     },
   },
   plugins: [],
