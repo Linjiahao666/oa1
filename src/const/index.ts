@@ -4,3 +4,8 @@ export enum MESSAGETYPE {
   VIDEO = 'video',
   FILE = 'file',
 }
+
+export enum EditorType {
+  ASYNCEDITOR = 'AsyncEditor',
+  VUEEDITOR = 'VueEditor',
+}
