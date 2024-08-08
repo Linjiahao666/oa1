@@ -12,3 +12,13 @@
 .dark {
   --color-border: #ffffff;
 }
+
+@layer utilities {
+  .shadow-inset {
+    box-shadow: inset -4px -4px 4px rgba(0, 0, 0, 0.1), inset 4px 4px 4px white !important;
+  }
+  .dark .shadow-inset {
+    box-shadow: inset 4px 4px 4px rgba(255, 255, 255, 0.1),
+      inset -4px -4px 4px #0f0f0f !important;
+  }
+}
