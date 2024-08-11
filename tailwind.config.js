@@ -9,6 +9,9 @@ export default {
       backgroundColor: {
         editor: "var(--el-border-color-dark)",
       },
+      borderWidth: {
+        1: "1px",
+      },
     },
   },
   plugins: [],
