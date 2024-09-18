@@ -9,3 +9,8 @@ export enum EditorType {
   ASYNCEDITOR = 'AsyncEditor',
   VUEEDITOR = 'VueEditor',
 }
+
+export const DrawConfig = {
+  width: 100,
+  height: 30,
+}

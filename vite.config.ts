@@ -25,7 +25,7 @@ export default defineConfig({
     viteMockServe({
       mockPath: './src/mock', // mock 文件夹路径
       localEnabled: true, // 是否启用本地 mock
-    }),
+    } as any),
   ],
   resolve: {
     alias: {
@@ -34,10 +34,10 @@ export default defineConfig({
   },
   // server: {
   //   proxy: {
-  //     '/user': {
+  //     '/api': {
   //       target: 'http://localhost:3000/',
   //       changeOrigin: true,
-  //       rewrite: (path) => path.replace(/^\/user/, '')
+  //       rewrite: (path) => path.replace(/^\/api/, '')
   //     }
   //   }
   // }

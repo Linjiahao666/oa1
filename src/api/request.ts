@@ -10,28 +10,15 @@ const req = axios.create({
 // })
 
 let promise: any = null;
-export async function login() {
-  const res = await req.request({
-    method: 'post',
-    url: '/login',
-    data: {
-      username: 'a',
-      password: '123'
-    }
-  })
-  return res
-}
-
-
 
 export async function getAccessToken() {
   if (!promise) {
     promise = new Promise(async resolve => {
       const res = await req.request({
         method: 'post',
-        url: '/token',
+        url: '/auth/refresh',
         __isRefresh: true
-      })
+      } as any)
       res && resolve(res.status === 200)
       resolve(false)
     })
@@ -50,7 +37,6 @@ req.interceptors.response.use(response => {
       const originnalRequest = error.config;
       const isRefreshSuccess = await getAccessToken();
       let res;
-      console.log(isRefreshSuccess);
       if (!isRefreshSuccess) {
         router.push('/user/login')
       } else {

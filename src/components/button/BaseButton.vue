@@ -1,11 +1,18 @@
 <template>
   <el-button>
-    123
+    <slot>
+      {{ text }}
+    </slot>
   </el-button>
 </template>
 
-<script scoped>
-
+<script setup>
+defineProps({
+  text: {
+    type: String,
+    default: 'Button'
+  }
+})
 </script>
 
 <style lang="scss" scoped>

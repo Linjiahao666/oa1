@@ -1,7 +1,7 @@
 export const routes = [
   {
     name: 'chatroom',
-    path: '/',
+    path: '/chat',
     component: () => import('./ChatRoom.vue')
   }
 ]

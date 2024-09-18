@@ -7,7 +7,10 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    BaseButton: typeof import('./src/components/button/BaseButton.vue')['default']
     BaseChatList: typeof import('./src/components/chat/BaseChatList.vue')['default']
+    BaseDraw: typeof import('./src/pages/draw/BaseDraw.vue')['default']
+    BaseForm: typeof import('./src/components/form/BaseForm.vue')['default']
     BaseModal: typeof import('./src/components/modal/BaseModal.vue')['default']
     BaseNavigator: typeof import('./src/components/navigator/BaseNavigator.vue')['default']
     BasePageLayout: typeof import('./src/components/layout/BasePageLayout.vue')['default']
@@ -31,6 +34,10 @@ declare module 'vue' {
     ElSkeleton: typeof import('element-plus/es')['ElSkeleton']
     ElSkeletonItem: typeof import('element-plus/es')['ElSkeletonItem']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
+    ElUpload: typeof import('element-plus/es')['ElUpload']
+    FormFooter: typeof import('./src/components/form/FormFooter.vue')['default']
+    FormHeader: typeof import('./src/components/form/FormHeader.vue')['default']
+    FormItem: typeof import('./src/components/form/FormItem.vue')['default']
     ListRowSelector: typeof import('./src/components/selector/ListRowSelector.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
