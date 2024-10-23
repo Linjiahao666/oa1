@@ -43,12 +43,21 @@ export class Node {
 
   setX(x: number) {
     this.x = x;
+    this.composition();
   }
 
   setY(y: number) {
     this.y = y;
+    this.composition();
   }
 
+  setPos(x: number, y: number) {
+    this.setX(x);
+    this.setY(y);
+  }
+  getParent() {
+    return this.parent;
+  }
   setParent(parent: Node) {
     this.parent = parent;
     parent.appendChild(this);
@@ -62,12 +71,16 @@ export class Node {
   removeChild(child: Node) {
     this.children = this.children.filter((item) => item !== child);
   }
-  getLeafNum(): number {
+  _getLeafNum(): number {
     if (this.children.length === 0) {
       return 1;
     } else {
-      return this.children.reduce((acc, item) => acc + item.getLeafNum(), 0);
+      return this.children.reduce((acc, item) => acc + item._getLeafNum(), 0);
     }
+  }
+  getLeafNum() {
+    if (this.children.length === 0) return 0;
+    return this._getLeafNum();
   }
   addComposition(c: composition) {
     this.compositions.push(c);
@@ -75,6 +88,19 @@ export class Node {
   }
   removeComposition(c: composition) {
     this.compositions = this.compositions.filter((item) => item !== c);
+  }
+  composition() {
+    if (this.compositions.length !== 0) {
+      this.compositions.forEach((item) => {
+        item.put(this.x, this.y);
+      });
+    }
+  }
+  active() {
+    this.isActive = true;
+  }
+  deactive() {
+    this.isActive = false;
   }
 }
 export class Root {
@@ -91,6 +117,7 @@ export class Root {
       return n % 2 === 1;
     }
     const children = node.getChildren();
+    if (children.length === 0) return;
     const oddFlag = odd(children.length);
     if (children.length !== 0) {
       const mid = Math.floor(children.length / 2);
@@ -121,22 +148,27 @@ export class Root {
                 return total + cur;
               }
             }, 0);
-            console.log(accUp);
             item.setY(
-              node.y - (gap.y + nodeArea.height) * (mid - index + accUp)
+              node.y -
+                (gap.y + nodeArea.height) * (mid - index + accUp) +
+                nodeArea.height / 2
             );
           } else if (index >= mid) {
             //下面的中心
             // mid = 2 index = 2 一个gap加上一个高度
-            const accDown = leafs.slice(mid).reduce((total, cur, idx) => {
-              if (idx === 0 || idx === leafs.length - 1) {
-                return total + Math.ceil(cur / 2);
-              } else {
-                return total + cur;
-              }
-            }, 0);
+            const accDown = leafs
+              .slice(mid, index + 1)
+              .reduce((total, cur, idx) => {
+                if (idx === 0 || idx === index - mid) {
+                  return total + cur / 2;
+                } else {
+                  return total + cur;
+                }
+              }, 0);
             item.setY(
-              node.y + (gap.y + nodeArea.height) * (index + 1 - mid + accDown)
+              node.y +
+                (gap.y + nodeArea.height) * (index + 1 - mid + accDown) -
+                nodeArea.height / 2
             );
           }
         } else {
@@ -167,9 +199,7 @@ export class Root {
             );
           }
         }
-        if (item.getChildren().length !== 0) {
-          this.put(item);
-        }
+        this.put(item);
       });
     }
   }
@@ -183,6 +213,19 @@ function composify(target: any, propertyKey: any, descriptor: any) {
   };
   return descriptor;
 }
+// 将composition装载到node对象上
+function load(node?: Node) {
+  return function (target: any, propertyKey: any, descriptor: any) {
+    const originalMethod = descriptor.value;
+    descriptor.value = function (...args: any[]) {
+      const result = originalMethod.apply(this, args);
+      const n = node || new Node();
+      n.addComposition(result);
+      return n;
+    };
+    return descriptor;
+  };
+}
 
 export class Paper {
   public draw: any;
@@ -191,13 +234,19 @@ export class Paper {
   constructor(wrapper: string) {
     this.draw = SVG().addTo(wrapper).size("100%", "100%").group();
     this.draw.draggable();
-    this.activeNode = new Node();
-    this.R = new Root(this.activeNode);
-    console.log(this.drawRect(100, 100));
+    const center = new Center(wrapper);
+    const x = center.getX();
+    const y = center.getY();
+    const rect = this.drawRect();
+    this.activeNode = rect;
+    this.activeNode.active();
+    this.R = new Root(rect);
+    rect.setPos(x, y);
   }
+  @load()
   @composify
-  drawRect(x: number, y: number) {
-    return this.draw
+  drawRect(x = 100, y = 45) {
+    const rect = this.draw
       .rect(x, y)
       .attr({
         rx: 5,
@@ -205,27 +254,54 @@ export class Paper {
       })
       .fill("#c82")
       .stroke({ color: "#000", width: 1 });
+    rect.node.addEventListener("click", () => {
+      console.log(123);
+    });
+    return rect;
+  }
+  son(parent = this.activeNode) {
+    const son = this.drawRect();
+    parent.appendChild(son);
+    this.R.put();
+    return son;
+  }
+  sibling(brother: Node) {
+    const sibling = this.drawRect();
+    const parent = brother.getParent();
+    brother.setParent(parent as Node);
+    const idx = parent?.getChildren().indexOf(brother);
+    parent?.getChildren().splice(idx as number, 0, sibling);
+    this.R.put();
+    return sibling;
+  }
+  active(node: Node) {
+    this.activeNode = node;
+    node.active();
+  }
+  changeActive(newActiveNode: Node) {
+    this.activeNode.deactive();
+    this.active(newActiveNode);
   }
 }
-// export class Center {
-//   private x: number;
-//   private y: number;
-//   private screenX: number;
-//   private screenY: number;
-//   constructor(wrapper: string) {
-//     const clinetRect = document.querySelector(wrapper)?.getBoundingClientRect();
-//     this.screenX = clinetRect?.width || 0;
-//     this.screenY = clinetRect?.height || 0;
-//     this.x = (this.screenX) * 0.25;
-//     this.y = (this.screenY) * 0.5;
-//   }
-//   getX() {
-//     return this.x;
-//   }
-//   getY() {
-//     return this.y;
-//   }
-// }
+export class Center {
+  private x: number;
+  private y: number;
+  private screenX: number;
+  private screenY: number;
+  constructor(wrapper: string) {
+    const clinetRect = document.querySelector(wrapper)?.getBoundingClientRect();
+    this.screenX = clinetRect?.width || 0;
+    this.screenY = clinetRect?.height || 0;
+    this.x = this.screenX * 0.25;
+    this.y = this.screenY * 0.5;
+  }
+  getX() {
+    return this.x;
+  }
+  getY() {
+    return this.y;
+  }
+}
 // export class Drawer {
 //   public static draw(node: Node) {
 //     return true;
