@@ -5,8 +5,11 @@ import {
 } from "@svgdotjs/svg.js";
 import "@svgdotjs/svg.draggable.js";
 import styles from "../styles/core.module.css";
+import { eventNames } from "process";
+import { de } from "element-plus/es/locale/index.mjs";
+import { node } from "./draw";
 const gap = {
-  x: 20,
+  x: 40,
   y: 20,
 };
 
@@ -15,8 +18,10 @@ const nodeArea = {
   height: 45,
 };
 
-class composition {
+
+abstract class composition {
   public item: any;
+  protected isActive = false;
   constructor(item: any) {
     this.item = item;
   }
@@ -24,6 +29,52 @@ class composition {
     const bbox = this.item.bbox();
     const { width, height } = bbox;
     this.item?.move(parentx - width / 2, parenty - height / 2);
+  }
+  // 重写
+  abstract active(): void;
+  // if (!this.isActive) {
+  //   this.toggleActive()
+  // }
+  // }
+  abstract deactive(): void;
+  // if (this.isActive) {
+  //   this.toggleActive()
+  // }
+  // }
+  toggleActive() {
+    this.isActive = !this.isActive
+  }
+}
+const RectConfig = {
+  Strokecolor: '#000',
+  StrokeWidth: 1
+}
+class Rect extends composition {
+  constructor(item: any) {
+    super(item)
+    this.item.node.addEventListener('click', (e: any) => {
+      e.stopPropagation()
+      this.active()
+      activeNode = e.target.instance.n
+    })
+  }
+  active() {
+    // if (!this.isActive) {
+    this.toggleActive()
+    this.item.stroke({
+      color: RectConfig.Strokecolor,
+      width: RectConfig.StrokeWidth
+    })
+    // }
+  }
+  deactive(): void {
+    if (this.isActive) {
+      this.toggleActive()
+      this.item.stroke({
+        color: RectConfig.Strokecolor,
+        width: 0
+      })
+    }
   }
 }
 
@@ -98,9 +149,25 @@ export class Node {
   }
   active() {
     this.isActive = true;
+    if (this.compositions.length) {
+      this.compositions.forEach((item, index) => {
+        item.active()
+      })
+    }
   }
   deactive() {
     this.isActive = false;
+    if (this.compositions.length) {
+      this.compositions.forEach((item, index) => {
+        item.deactive()
+      })
+    }
+  }
+  adjust() {
+    const leader = this.compositions[0]
+    const leaderPos = leader.item.bbox()
+    const { x = 0, y = 0 } = leaderPos
+    this.setPos(x + nodeArea.width / 2, y + nodeArea.height / 2)
   }
 }
 export class Root {
@@ -108,7 +175,7 @@ export class Root {
   constructor(root: Node) {
     this.root = root;
   }
-  getAccumulateLeafNum() {}
+  getAccumulateLeafNum() { }
   // 排列虚拟节点的位置
   // 2-2节点的位置取决于在父节点的位置和叶子节点的个数
   // 例如根节点下是3个节点，那么2-2处在中心位置，但是2-1和2-3必须根据2-2叶子节点的个数腾出半数节点的位置
@@ -150,8 +217,8 @@ export class Root {
             }, 0);
             item.setY(
               node.y -
-                (gap.y + nodeArea.height) * (mid - index + accUp) +
-                nodeArea.height / 2
+              (gap.y + nodeArea.height) * (mid - index + accUp) +
+              nodeArea.height / 2
             );
           } else if (index >= mid) {
             //下面的中心
@@ -167,35 +234,36 @@ export class Root {
               }, 0);
             item.setY(
               node.y +
-                (gap.y + nodeArea.height) * (index + 1 - mid + accDown) -
-                nodeArea.height / 2
+              (gap.y + nodeArea.height) * (index + 1 - mid + accDown) -
+              nodeArea.height / 2
             );
           }
         } else {
           // 奇数节点
           if (index < mid) {
             // mid = 1 index = 0 一个gap一个高度
-            const accUp = leafs.slice(0, mid).reduce((total, cur, idx) => {
-              if (idx === 0 || idx === mid - 1) {
+            const accUp = leafs.slice(index, mid + 1).reduce((total, cur, idx) => {
+              if (idx === 0 || idx === mid) {
                 return total + Math.ceil(cur / 2);
               } else {
                 return total + cur;
               }
             }, 0);
             item.setY(
-              node.y - (gap.y + nodeArea.height) * (mid - index + accUp)
+              node.y - (gap.y + nodeArea.height) * (mid - index + (leafs[index] === 0 ? 0 : accUp))
             );
           } else if (index > mid) {
             // mid = 1 index = 2 一个gap一个高度
-            const accDown = leafs.slice(mid + 1).reduce((total, cur, idx) => {
-              if (idx === 0 || idx === leafs.length - 1) {
-                return total + Math.ceil(cur / 2);
-              } else {
+            const accDown = leafs.slice(mid).reduce((total, cur, idx) => {
+              if (idx === 0 || idx === index - mid) {
+                return total + Math.floor(cur / 2);
+              }
+              else {
                 return total + cur;
               }
             }, 0);
             item.setY(
-              node.y + (gap.y + nodeArea.height) * (index - mid + accDown)
+              node.y + (gap.y + nodeArea.height) * (index - mid + (leafs[index] === 0 ? 0 : accDown))
             );
           }
         }
@@ -205,13 +273,16 @@ export class Root {
   }
 }
 
-function composify(target: any, propertyKey: any, descriptor: any) {
-  const originalMethod = descriptor.value;
-  descriptor.value = function (...args: any[]) {
-    const result = originalMethod.apply(this, args);
-    return new composition(result);
-  };
-  return descriptor;
+function Composify<T extends composition>(constructor: new (...args: any[]) => T) {
+  return function (target: any, propertyKey: any, descriptor: any) {
+    const originalMethod = descriptor.value;
+    descriptor.value = function (...args: any[]) {
+      const result = originalMethod.apply(this, args);
+      // console.log(new constructor(result))
+      return new constructor(result);
+    };
+    return descriptor;
+  }
 }
 // 将composition装载到node对象上
 function load(node?: Node) {
@@ -220,31 +291,49 @@ function load(node?: Node) {
     descriptor.value = function (...args: any[]) {
       const result = originalMethod.apply(this, args);
       const n = node || new Node();
+      result.item.n = n
       n.addComposition(result);
       return n;
     };
     return descriptor;
   };
 }
-
+let root: Node | undefined
+let activeNode: Node | undefined
 export class Paper {
+  public globalEvent: HTMLElement | null;
   public draw: any;
   public R: Root;
-  public activeNode: Node;
   constructor(wrapper: string) {
+    this.globalEvent = document.querySelector(wrapper);
     this.draw = SVG().addTo(wrapper).size("100%", "100%").group();
-    this.draw.draggable();
+    this.draw.draggable().on('dragend', (e) => {
+      root?.adjust()
+    });
     const center = new Center(wrapper);
     const x = center.getX();
     const y = center.getY();
     const rect = this.drawRect();
-    this.activeNode = rect;
-    this.activeNode.active();
+    root = rect
+    activeNode = rect;
+    rect.active();
     this.R = new Root(rect);
     rect.setPos(x, y);
+    this.init()
+  }
+  init() {
+    this.register('click', (e: any) => {
+      const instance = e.target.instance
+      this.deactive()
+    })
+    window.addEventListener('keyup', (e: any) => {
+      if (e.key === 'a') {
+        this.son()
+      }
+    })
   }
   @load()
-  @composify
+  @Composify(Rect)
   drawRect(x = 100, y = 45) {
     const rect = this.draw
       .rect(x, y)
@@ -253,36 +342,54 @@ export class Paper {
         ry: 5,
       })
       .fill("#c82")
-      .stroke({ color: "#000", width: 1 });
-    rect.node.addEventListener("click", () => {
-      console.log(123);
-    });
+      .stroke({ color: "#000", width: 0 });
     return rect;
   }
-  son(parent = this.activeNode) {
-    const son = this.drawRect();
-    parent.appendChild(son);
-    this.R.put();
-    return son;
+  son(parent = activeNode) {
+    if (parent) {
+      const son = this.drawRect();
+      parent?.appendChild(son);
+      this.R.put();
+      return son;
+    }
   }
-  sibling(brother: Node) {
-    const sibling = this.drawRect();
-    const parent = brother.getParent();
-    brother.setParent(parent as Node);
-    const idx = parent?.getChildren().indexOf(brother);
-    parent?.getChildren().splice(idx as number, 0, sibling);
-    this.R.put();
-    return sibling;
+  sibling(brother = activeNode) {
+    if (brother) {
+      const sibling = this.drawRect();
+      const parent = brother.getParent();
+      brother.setParent(parent as Node);
+      const idx = parent?.getChildren().indexOf(brother);
+      parent?.getChildren().splice(idx as number, 0, sibling);
+      this.R.put();
+      return sibling;
+    }
   }
   active(node: Node) {
-    this.activeNode = node;
+    activeNode = node;
     node.active();
   }
+  deactive() {
+    console.log(activeNode)
+    if (activeNode) {
+      activeNode.deactive()
+      activeNode = undefined
+    }
+  }
   changeActive(newActiveNode: Node) {
-    this.activeNode.deactive();
+    activeNode?.deactive();
     this.active(newActiveNode);
   }
+  getGlobalEventObj() {
+    return this.globalEvent
+  }
+  register(eventName: string, fn: (e: Event) => any) {
+    this.globalEvent?.addEventListener(eventName, fn)
+  }
+  unregister(eventName: string, fn: (e: Event) => any) {
+    this.globalEvent?.removeEventListener(eventName, fn)
+  }
 }
+
 export class Center {
   private x: number;
   private y: number;
