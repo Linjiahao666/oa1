@@ -298,7 +298,7 @@ export class Root {
             );
           } else if (index >= mid) {
             let accDown = 0
-            for (let i = mid; i < children.length; i++) {
+            for (let i = mid; i <= index; i++) {
               if (i === index) {
                 const d = children[i].getUpLeafNum()
                 accDown += d < 1 ? 0 : d
